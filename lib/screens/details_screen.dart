@@ -4,6 +4,7 @@ import 'package:student_details_app/controller/controller.dart';
 import 'package:student_details_app/model/model_db.dart';
 import 'package:student_details_app/screens/home_screen.dart';
 import 'package:student_details_app/screens/update_screen.dart';
+import 'package:student_details_app/widgets/snackbar.dart';
 
 class ScreenDetails extends StatelessWidget {
   final Studentmodel studentdetails;
@@ -15,12 +16,16 @@ class ScreenDetails extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: Colors.yellow,
+        backgroundColor: Colors.purple,
         title: const Text(
           "Details",
           style: TextStyle(
             fontWeight: FontWeight.bold,
+            color: Colors.white,
           ),
+        ),
+        iconTheme: const IconThemeData(
+          color: Colors.white,
         ),
       ),
       body: Padding(
@@ -67,14 +72,7 @@ class ScreenDetails extends StatelessWidget {
                                       MaterialPageRoute(
                                           builder: (ctx) =>
                                               const ScreenHome()));
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text('Successfully Deleted'),
-                                      behavior: SnackBarBehavior.floating,
-                                      margin: EdgeInsets.all(10),
-                                      backgroundColor: Colors.red,
-                                    ),
-                                  );
+                                  snackbar('Successfully Deleted', context);
                                 },
                                 child: const Text(
                                   'Delete',

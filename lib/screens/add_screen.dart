@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:student_details_app/controller/controller.dart';
 import 'package:student_details_app/model/model_db.dart';
+import 'package:student_details_app/widgets/snackbar.dart';
 
 String? image;
 
@@ -25,14 +26,18 @@ class _ScreenAddState extends State<ScreenAdd> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.yellow,
+        backgroundColor: Colors.purple,
         title: const Text(
           'Add',
           style: TextStyle(
             fontWeight: FontWeight.bold,
+            color: Colors.white,
           ),
         ),
         centerTitle: true,
+        iconTheme: const IconThemeData(
+          color: Colors.white,
+        ),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -180,11 +185,11 @@ class _ScreenAddState extends State<ScreenAdd> {
               onPressed: () {
                 addStudentClicked(context);
               },
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.yellow),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.purple),
               child: const Text(
                 'Add',
                 style: TextStyle(
-                  color: Colors.black,
+                  color: Colors.white,
                   fontSize: 25,
                 ),
               ),
@@ -229,33 +234,11 @@ class _ScreenAddState extends State<ScreenAdd> {
   }
 
   submitbuttondetailsok(data) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        duration: const Duration(seconds: 2),
-        behavior: SnackBarBehavior.floating,
-        backgroundColor: Colors.green,
-        margin: const EdgeInsets.all(10),
-        content: Text(
-          '$data\'s Details Added',
-          textAlign: TextAlign.center,
-        ),
-      ),
-    );
+    snackbar('$data\'s Details Added', context);
   }
 
   submitbuttondetailnotok() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        duration: Duration(seconds: 2),
-        behavior: SnackBarBehavior.floating,
-        backgroundColor: Colors.red,
-        margin: EdgeInsets.all(10),
-        content: Text(
-          'Please Add Student Identity Photo',
-          textAlign: TextAlign.center,
-        ),
-      ),
-    );
+    snackbar('Please Add Student Identity Photo', context);
   }
 
   Future<void> getImage(ImageSource source, BuildContext context) async {

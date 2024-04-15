@@ -4,6 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:student_details_app/controller/controller.dart';
 import 'package:student_details_app/model/model_db.dart';
 import 'package:student_details_app/screens/home_screen.dart';
+import 'package:student_details_app/widgets/snackbar.dart';
 
 class ScreenUpdate extends StatefulWidget {
   final Studentmodel studentDetails;
@@ -46,14 +47,18 @@ class _ScreenUpdateState extends State<ScreenUpdate> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.yellow,
+        backgroundColor: Colors.purple,
         title: const Text(
           'Update',
           style: TextStyle(
             fontWeight: FontWeight.bold,
+            color: Colors.white,
           ),
         ),
         centerTitle: true,
+        iconTheme: const IconThemeData(
+          color: Colors.white,
+        ),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -181,20 +186,13 @@ class _ScreenUpdateState extends State<ScreenUpdate> {
                 );
                 Navigator.push(context,
                     MaterialPageRoute(builder: (ctx) => const ScreenHome()));
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Successfully Updated'),
-                    behavior: SnackBarBehavior.floating,
-                    margin: EdgeInsets.all(10),
-                    backgroundColor: Colors.green,
-                  ),
-                );
+                snackbar('Successfully Updated', context);
               },
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.yellow),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.purple),
               child: const Text(
                 'Update',
                 style: TextStyle(
-                  color: Colors.black,
+                  color: Colors.white,
                   fontSize: 25,
                 ),
               ),

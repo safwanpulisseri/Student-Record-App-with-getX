@@ -18,11 +18,12 @@ class _ScreenHomeState extends State<ScreenHome> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.yellow,
+        backgroundColor: Colors.purple,
         title: const Text(
           'Student Record',
           style: TextStyle(
             fontWeight: FontWeight.bold,
+            color: Colors.white,
           ),
         ),
         centerTitle: true,
@@ -36,6 +37,7 @@ class _ScreenHomeState extends State<ScreenHome> {
             },
             icon: const Icon(
               Icons.search,
+              color: Colors.white,
             ),
           ),
         ],
@@ -120,14 +122,17 @@ class _ScreenHomeState extends State<ScreenHome> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.yellow,
+        backgroundColor: Colors.purple,
         onPressed: () {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const ScreenAdd()),
           );
         },
-        child: const Icon(Icons.add),
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
       ),
     );
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:student_details_app/controller/controller.dart';
+import 'package:student_details_app/screens/home_screen.dart';
 import 'package:student_details_app/screens/splash_screen.dart';
 
 Future<void> main() async {
@@ -16,10 +17,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.yellow),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.purple),
         useMaterial3: true,
       ),
-      home: const ScreenSplash(),
+      home: const ScreenHome(),
     );
   }
 }
