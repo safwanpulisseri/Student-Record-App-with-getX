@@ -1,38 +1,20 @@
-class Studentmodel {
-  int? id;
+import 'package:hive/hive.dart';
+part 'model_db.g.dart';
 
-  final String name;
+@HiveType(typeId: 0)
+class Studentmodel extends HiveObject {
+  @HiveField(0)
+  late String name;
 
-  final String age;
+  @HiveField(1)
+  late String age;
 
-  final String address;
+  @HiveField(2)
+  late String address;
 
-  final String mobile;
+  @HiveField(3)
+  late String mobile;
 
-  final String image;
-
-  Studentmodel(
-      {required this.name,
-      required this.age,
-      required this.address,
-      required this.mobile,
-      required this.image,
-      this.id});
-
-  static Studentmodel fromMap(Map<String, Object?> map) {
-    final id = map['id'] as int;
-    final name = map['name'] as String;
-    final age = map['age'] as String;
-    final address = map['address'] as String;
-    final mobile = map['mobile'] as String;
-    final image = map['image'] as String;
-
-    return Studentmodel(
-        id: id,
-        name: name,
-        age: age,
-        address: address,
-        mobile: mobile,
-        image: image);
-  }
+  @HiveField(4)
+  late String image;
 }

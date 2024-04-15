@@ -1,26 +1,22 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:get/get.dart';
 import 'package:student_details_app/controller/controller.dart';
+import 'package:student_details_app/controller/image_picker.dart';
 import 'package:student_details_app/model/model_db.dart';
-import 'package:student_details_app/widgets/snackbar.dart';
 
-String? image;
+class ScreenAdd extends StatelessWidget {
+  ScreenAdd({Key? key}) : super(key: key);
 
-class ScreenAdd extends StatefulWidget {
-  const ScreenAdd({super.key});
-
-  @override
-  State<ScreenAdd> createState() => _ScreenAddState();
-}
-
-class _ScreenAddState extends State<ScreenAdd> {
   final GlobalKey<FormState> _validation = GlobalKey<FormState>();
 
-  final _namecontroller = TextEditingController();
-  final _agecontroller = TextEditingController();
-  final _addresscontroller = TextEditingController();
-  final _mobilecontroller = TextEditingController();
+  final _nameController = TextEditingController();
+  final _ageController = TextEditingController();
+  final _addressController = TextEditingController();
+  final _mobileController = TextEditingController();
+
+  final Imagecontroller imageController = Get.put(Imagecontroller());
+  final HomeController homeController = Get.put(HomeController());
 
   @override
   Widget build(BuildContext context) {
@@ -62,57 +58,25 @@ class _ScreenAddState extends State<ScreenAdd> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        GestureDetector(
-                          onTap: () {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: const Text(
-                                    'Select image from...',
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  actions: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      children: [
-                                        IconButton(
-                                          onPressed: () {
-                                            getImage(
-                                                ImageSource.camera, context);
-                                            Navigator.of(context).pop();
-                                          },
-                                          icon: const Icon(
-                                            Icons.camera_alt_rounded,
-                                          ),
-                                        ),
-                                        IconButton(
-                                          onPressed: () {
-                                            getImage(
-                                                ImageSource.gallery, context);
-                                            Navigator.of(context).pop();
-                                          },
-                                          icon: const Icon(
-                                            Icons.image,
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                          },
-                          child: CircleAvatar(
-                            backgroundColor: Colors.grey,
-                            radius: 50,
-                            backgroundImage: image != null
-                                ? FileImage(File(image!))
-                                : const AssetImage('assets/images/hero.png')
-                                    as ImageProvider,
-                          ),
-                        ),
+                        Obx(() {
+                          return GestureDetector(
+                            onTap: () {
+                              pickimages(
+                                  imageController); // Corrected method name
+                            },
+                            child: CircleAvatar(
+                              backgroundColor: Colors.grey,
+                              radius: 50,
+                              backgroundImage: imageController
+                                          .selectedImage.value !=
+                                      null
+                                  ? FileImage(File(imageController
+                                      .selectedImage.value!.path))
+                                  : const AssetImage('assets/images/hero.png')
+                                      as ImageProvider,
+                            ),
+                          );
+                        }),
                         TextFormField(
                           validator: (value) {
                             if (value!.isEmpty) {
@@ -120,59 +84,54 @@ class _ScreenAddState extends State<ScreenAdd> {
                             }
                             return null;
                           },
-                          controller: _namecontroller,
+                          controller: _nameController,
                           decoration: const InputDecoration(
-                              hintText: 'Name',
-                              suffixIcon: Icon(
-                                Icons.abc,
-                              )),
+                            hintText: 'Name',
+                            suffixIcon: Icon(Icons.person),
+                          ),
                         ),
                         TextFormField(
                           validator: (value) {
                             if (value!.isEmpty) {
-                              return 'Please enter a Class';
+                              return 'Please enter an Age';
                             }
                             return null;
                           },
-                          controller: _agecontroller,
+                          controller: _ageController,
                           decoration: const InputDecoration(
-                            suffixIcon: Icon(
-                              Icons.class_,
-                            ),
                             hintText: 'Age',
+                            suffixIcon: Icon(Icons.calendar_today),
                           ),
                         ),
                         TextFormField(
                           validator: (value) {
                             if (value!.isEmpty) {
-                              return 'Please enter a Guardian Name';
+                              return 'Please enter an Address';
                             }
                             return null;
                           },
-                          controller: _addresscontroller,
+                          controller: _addressController,
                           decoration: const InputDecoration(
-                            suffixIcon: Icon(
-                              Icons.person_2_rounded,
-                            ),
                             hintText: 'Address',
+                            suffixIcon: Icon(Icons.location_on),
                           ),
                         ),
                         TextFormField(
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
                           validator: (value) {
                             if (value!.isEmpty) {
                               return 'Please enter a Phone Number';
                             } else if (value.length != 10) {
-                              return 'Please enter ten digits Phone Number';
+                              return 'Please enter a 10-digit Phone Number';
                             }
                             return null;
                           },
-                          controller: _mobilecontroller,
-                          keyboardType: TextInputType.number,
+                          controller: _mobileController,
+                          keyboardType: TextInputType.phone,
                           decoration: const InputDecoration(
-                            suffixIcon: Icon(
-                              Icons.phone,
-                            ),
+                            //prefixText: '+91 ',
                             hintText: 'Phone',
+                            suffixIcon: Icon(Icons.phone),
                           ),
                         ),
                       ],
@@ -183,9 +142,11 @@ class _ScreenAddState extends State<ScreenAdd> {
             ),
             ElevatedButton(
               onPressed: () {
-                addStudentClicked(context);
+                onSubmit();
               },
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.purple),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.purple,
+              ),
               child: const Text(
                 'Add',
                 style: TextStyle(
@@ -200,53 +161,26 @@ class _ScreenAddState extends State<ScreenAdd> {
     );
   }
 
-  Future<void> addStudentClicked(BuildContext context) async {
-    final name = _namecontroller.text.trim();
-    final age = _agecontroller.text.trim();
-    final address = _addresscontroller.text.trim();
-    final mobile = _mobilecontroller.text.trim();
-
-    if (_validation.currentState!.validate() && image != null) {
-      final student = Studentmodel(
-          name: name,
-          age: age,
-          address: address,
-          mobile: mobile,
-          image: image!);
-      await addStudent(student);
-
-      Navigator.of(context).pop();
-      clearStudentProfilephoto();
-      submitbuttondetailsok(name);
-    } else if (_validation.currentState!.validate() && image == null) {
-      submitbuttondetailnotok();
-    }
-  }
-
-  clearStudentProfilephoto() {
-    _namecontroller.text = '';
-    _agecontroller.text = '';
-    _addresscontroller.text = '';
-    _mobilecontroller.text = '';
-    setState(() {
-      image = null;
-    });
-  }
-
-  submitbuttondetailsok(data) {
-    snackbar('$data\'s Details Added', context);
-  }
-
-  submitbuttondetailnotok() {
-    snackbar('Please Add Student Identity Photo', context);
-  }
-
-  Future<void> getImage(ImageSource source, BuildContext context) async {
-    final pickedImage = await ImagePicker().pickImage(source: source);
-    if (pickedImage != null) {
-      setState(() {
-        image = pickedImage.path;
-      });
+  void onSubmit() {
+    if (_validation.currentState!.validate() &&
+        imageController.selectedImage.value != null) {
+      Studentmodel value = Studentmodel()
+        ..name = _nameController.text.trim()
+        ..age = _ageController.text.trim()
+        ..address = _addressController.text.trim()
+        ..mobile = _mobileController.text.trim()
+        ..image = imageController.selectedImage.value!.path;
+      homeController.addStudentToDb(value);
+      Get.back();
+    } else {
+      Get.snackbar(
+        'Error',
+        'Please complete the form and select a photo',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        duration: const Duration(seconds: 2),
+        dismissDirection: DismissDirection.horizontal,
+      );
     }
   }
 }

@@ -1,53 +1,52 @@
 import 'package:flutter/material.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:get/get.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:student_details_app/model/model_db.dart';
 
-ValueNotifier<List<Studentmodel>> studentlistNotifier = ValueNotifier([]);
+class HomeController extends GetxController {
+  late final Box<Studentmodel> studentBox;
 
-late Database _db;
+  final RxList<Studentmodel> students = <Studentmodel>[].obs;
 
-Future<void> initializeDatabase() async {
-  _db = await openDatabase('student.db', version: 1,
-      onCreate: (Database db, int version) async {
-    await db.execute(
-        'CREATE TABLE student(id INTEGER PRIMARY KEY ,name TEXT,age TEXT,address TEXT,mobile TEXT,image TEXT)');
-  });
-
-  // Retrieve data from the database during initialization
-  getAllStudents();
-}
-
-Future<void> addStudent(Studentmodel value) async {
-  await _db.rawInsert(
-      'INSERT INTO student(name,age,address,mobile,image)VALUES(?,?,?,?,?)',
-      [value.name, value.age, value.address, value.mobile, value.image]);
-  getAllStudents();
-}
-
-Future<void> getAllStudents() async {
-  final values = await _db.rawQuery('SELECT * FROM student');
-  studentlistNotifier.value.clear();
-  for (var map in values) {
-    final student = Studentmodel.fromMap(map);
-    studentlistNotifier.value.add(student);
+  @override
+  void onInit() {
+    super.onInit();
+    studentBox = Hive.box<Studentmodel>('student_db');
+    getStudents();
   }
-  studentlistNotifier.notifyListeners();
-}
 
-Future<void> deleteStudent(int id) async {
-  await _db.delete("student", where: "id=?", whereArgs: [id]);
-  getAllStudents();
-}
+  Future<void> addStudentToDb(Studentmodel value) async {
+    final studentDB = Hive.box<Studentmodel>('student_db');
+    await studentDB.add(value);
+    Get.snackbar('Success', 'Student detials saved Successfully',
+        backgroundColor: Colors.green,
+        duration: const Duration(seconds: 2),
+        dismissDirection: DismissDirection.horizontal);
+  }
 
-Future<void> updateStudent(int id, String name, String age, String address,
-    String mobile, String image) async {
-  final data = {
-    'name': name,
-    'age': age,
-    'address': address,
-    'mobile': mobile,
-    'image': image
-  };
-  await _db.update("student", data, where: 'id=?', whereArgs: [id]);
-  getAllStudents();
+  void getStudents() {
+    students.assignAll(studentBox.values.toList());
+    studentBox.watch().listen((event) {
+      students.assignAll(studentBox.values.toList());
+    });
+  }
+
+  void delete(Studentmodel student) {
+    studentBox.delete(student.key);
+    students.remove(student);
+  }
+
+  void updateStudent(Studentmodel student, String name, String age,
+      String address, String mobile, imageController) {
+    final index = students.indexWhere((s) => s.key == student.key);
+    if (index != -1) {
+      students[index].name = name;
+      students[index].age = age;
+      students[index].address = address;
+      students[index].mobile = mobile;
+      students[index].image = imageController.selectedImage.value!.path;
+      imageController.selectedImage.value = null;
+      studentBox.put(students[index].key, students[index]);
+    }
+  }
 }
