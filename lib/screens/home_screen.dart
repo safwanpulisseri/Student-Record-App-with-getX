@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:student_details_app/controller/controller.dart';
 import 'package:student_details_app/screens/add_screen.dart';
 import 'package:student_details_app/screens/details_screen.dart';
+import 'package:student_details_app/widgets/search.dart';
 
 final HomeController homeController = Get.put(HomeController());
 
@@ -24,18 +25,18 @@ class ScreenHome extends StatelessWidget {
         ),
         centerTitle: true,
         actions: [
-          // IconButton(
-          //   onPressed: () {
-          //     showSearch(
-          //       context: context,
-          //       delegate: StudentSearchDelegate(),
-          //     );
-          //   },
-          //   icon: const Icon(
-          //     Icons.search,
-          //     color: Colors.white,
-          //   ),
-          // ),
+          IconButton(
+            onPressed: () {
+              showSearch(
+                context: context,
+                delegate: StudentSearchDelegate(homeController.students),
+              );
+            },
+            icon: const Icon(
+              Icons.search,
+              color: Colors.white,
+            ),
+          ),
         ],
         leading: Container(),
       ),
