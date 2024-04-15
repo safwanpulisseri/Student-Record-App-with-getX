@@ -10,12 +10,13 @@ class Imagecontroller extends GetxController {
 pickimages(Imagecontroller imagecontroller) async {
   Get.defaultDialog(
       title: 'Select Photo',
-      titleStyle: const TextStyle(fontSize: 24, fontWeight: FontWeight.w400),
+      titleStyle: const TextStyle(
+          fontSize: 24, fontWeight: FontWeight.w400, color: Colors.white),
       content: const Text(
         'Please choose any option to add profile',
         style: TextStyle(color: Colors.white, fontSize: 12),
       ),
-      backgroundColor: Colors.green.shade900,
+      backgroundColor: Colors.purple,
       actions: [
         ElevatedButton(
             style: const ButtonStyle(

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:student_details_app/controller/controller.dart';
 import 'package:student_details_app/screens/add_screen.dart';
+import 'package:student_details_app/screens/details_screen.dart';
 
 final HomeController homeController = Get.put(HomeController());
 
@@ -61,13 +62,11 @@ class ScreenHome extends StatelessWidget {
               final student = homeController.students[index];
               return GestureDetector(
                 onTap: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (context) =>
-                  //         ScreenDetails(studentdetails: data),
-                  //   ),
-                  // );
+                  Get.to(
+                      ScreenDetails(
+                        studentdetails: student,
+                      ),
+                      transition: Transition.zoom);
                 },
                 child: Card(
                   color: Colors.black45,
