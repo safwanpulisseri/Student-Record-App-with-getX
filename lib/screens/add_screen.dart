@@ -61,8 +61,7 @@ class ScreenAdd extends StatelessWidget {
                         Obx(() {
                           return GestureDetector(
                             onTap: () {
-                              pickimages(
-                                  imageController); // Corrected method name
+                              pickimages(imageController);
                             },
                             child: CircleAvatar(
                               backgroundColor: Colors.grey,
